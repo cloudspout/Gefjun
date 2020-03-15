@@ -1,77 +1,76 @@
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from signal import signal, SIGINT
+from sys import exit
 import logging
 import time
 import json
-import argparse
-from dataclasses import dataclass
 
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+from Greenhouse import PhysicalEnvironment, Greenhouse
 
-import RPi.GPIO as GPIO
-CHANNEL1=17
-CHANNEL2=18
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(CHANNEL1, GPIO.OUT)
-lights=False
-GPIO.setup(CHANNEL2, GPIO.OUT)
-from mcp3208 import MCP3208
-adc = MCP3208()
-import Adafruit_BMP.BMP085 as BMP085
-sensor2 = BMP085.BMP085(mode=BMP085.BMP085_ULTRAHIGHRES)
+# Configure logging
+logger = logging.getLogger("Gefjun,core")
+logger.setLevel(logging.INFO)
 
-def meassureLight():
-    return lights
-
-@dataclass
-class PhysicalEnvironment:
-    pressure: float
-    altitude: float
-    temperature: float
-    light1: int
-    light2: int
-
-def measureEnvironment():
-    env = PhysicalEnvironment(sensor2.read_pressure(), sensor2.read_altitude(), sensor2.read_temperature(),
-                              adc.read(0), adc.read(1))
-    print(env)
-    return env
+logging.getLogger("AWSIoTPythonSDK.core").setLevel(logging.WARNING)
+streamHandler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+streamHandler.setFormatter(formatter)
+logger.addHandler(streamHandler)
+    
+def generateEnironmentUpdatePayload(greenhouse):
+    env = greenhouse.measureEnvironment()
+    envDict = {'temperature': env.temperature, 'pressure': env.pressure, 'altitude': env.altitude,
+               'lux1': env.lux1, 'lux2': env.lux2, 'light': env.light}
+    stateDict = {'reported': envDict}
+    payloadDict = {"state": stateDict}
+    JSONPayload = json.dumps(payloadDict)
+    logger.debug(JSONPayload)
+    return JSONPayload
 
 # Custom Shadow callback
 def customShadowCallback_Update(payload, responseStatus, token):
     # payload is a JSON string ready to be parsed using json.loads(...)
     # in both Py2.x and Py3.x
     if responseStatus == "timeout":
-        print("Update request " + token + " time out!")
+        logger.info('Update request %s time out!', token)
     if responseStatus == "accepted":
         payloadDict = json.loads(payload)
-        print("Update request with token: " + token + " accepted!")
+        logger.info('Update request with token: %s accepted!', token)
     if responseStatus == "rejected":
-        print("Update request " + token + " rejected!")
+        logger.info('Update request %s rejected!', token)
 
-def customShadowCallback_Delta(payload, responseStatus, token):
-    if responseStatus == 'delta/sensor':
-        payloadDict = json.loads(payload)
-        stateDict = payloadDict['state']
-        if 'lights' in stateDict:
-            lights = stateDict['lights']
-        if (lights):
-            print('Lights on!')
-            GPIO.output(CHANNEL1, GPIO.LOW)
-            GPIO.output(CHANNEL2, GPIO.LOW)
-        else:
-            print('Lights off!')
-            GPIO.output(CHANNEL1, GPIO.HIGH)
-            GPIO.output(CHANNEL2, GPIO.HIGH)
+def handleLightsUpdate(stateDict, greenhouse):
+    desiredLightState = stateDict['light']
+    if (desiredLightState):
+        greenhouse.turnLightsOn()
+    else:
+        greenhouse.turnLightsOff()
+    
+    return desiredLightState
 
+def customShadowCallback_Delta(greenhouse):
+    def inner_delta(payload, responseStatus, token):
+        logger.info('delta: %s', payload)
+        if responseStatus == 'delta/sensor':
+            payloadDict = json.loads(payload)
+            stateDict = payloadDict['state']
+            if 'light' in stateDict:
+                lights = handleLightsUpdate(stateDict, greenhouse)
+                    
+        JSONPayload = generateEnironmentUpdatePayload(greenhouse)
+        logger.info('Environment for delta: %s', JSONPayload)
+        deviceShadowHandler.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+    return inner_delta
+    
 def customShadowCallback_Delete(payload, responseStatus, token):
     if responseStatus == "timeout":
-        print("Delete request " + token + " time out!")
+        logger.info('Delete request %s time out!', token)
     if responseStatus == "accepted":
-        print("~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Delete request with token: " + token + " accepted!")
-        print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+        logger.info("~~~~~~~~~~~~~~~~~~~~~~~")
+        logger.info("Delete request with token: %s accepted!", token)
+        logger.info("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
     if responseStatus == "rejected":
-        print("Delete request " + token + " rejected!")
+        logger.info("Delete request %s rejected!", token)
 
 rootCAPath = 'root-CA.crt'
 certificatePath = 'sensor.pem'
@@ -81,19 +80,10 @@ port = 8883
 clientId = 'RaspberryPi'
 thingName = 'sensor'
 
-# Configure logging
-logger = logging.getLogger("AWSIoTPythonSDK.core")
-logger.setLevel(logging.DEBUG)
-streamHandler = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-streamHandler.setFormatter(formatter)
-logger.addHandler(streamHandler)
-
 # Init AWSIoTMQTTShadowClient
 myAWSIoTMQTTShadowClient = AWSIoTMQTTShadowClient(clientId)
 myAWSIoTMQTTShadowClient.configureEndpoint(host, port)
 myAWSIoTMQTTShadowClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
-
 
 # AWSIoTMQTTShadowClient configuration
 myAWSIoTMQTTShadowClient.configureAutoReconnectBackoffTime(1, 32, 20)
@@ -106,23 +96,28 @@ myAWSIoTMQTTShadowClient.connect()
 # Create a deviceShadow with persistent subscription
 deviceShadowHandler = myAWSIoTMQTTShadowClient.createShadowHandlerWithName(thingName, True)
 
-# Delete shadow JSON doc
-deviceShadowHandler.shadowDelete(customShadowCallback_Delete, 5)
-deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta)
-
+def main():
 # Update shadow in a loop
-try:
-    while True:
-        env = measureEnvironment()
-        light = meassureLight()
-        envDict = {'temperature': env.temperature, 'pressure': env.pressure, 'altitude': env.altitude,
-                   'light1': env.light1, 'light2': env.light2, 'light': light}
-        stateDict = {'reported': envDict}
-        payloadDict = {"state": stateDict}
-        JSONPayload = json.dumps(payloadDict)
-        print(JSONPayload)
+    with Greenhouse() as greenhouse:
+        
+        # Delete shadow JSON doc
+        #deviceShadowHandler.shadowDelete(customShadowCallback_Delete, 5)
 
-        deviceShadowHandler.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
-        time.sleep(5)
-finally:
-    GPIO.cleanup()
+        deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta(greenhouse))
+
+        while True:
+            JSONPayload = generateEnironmentUpdatePayload(greenhouse)
+            logger.info('Environment state for update: %s', JSONPayload)
+
+            deviceShadowHandler.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+            time.sleep(5)
+
+if __name__ == '__main__':
+    def handler(signal_received, frame):
+        # Handle any cleanup here
+        logger.error('SIGINT or CTRL-C detected. Exiting gracefully')
+        exit(0)
+    # Tell Python to run the handler() function when SIGINT is recieved
+    signal(SIGINT, handler)
+
+    main()
