@@ -5,3 +5,7 @@ variable "aws_region" {
 variable "iot_client" {
   default = "RaspberryPi"
 }
+
+variable "alexa_skill_id" {
+  type = string
+}

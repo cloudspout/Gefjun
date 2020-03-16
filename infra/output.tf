@@ -13,3 +13,7 @@ output "sensor_arn" {
 output "endpoint" {
   value = data.aws_iot_endpoint.gefjun.endpoint_address
 }
+
+output "lambda_arn" {
+  value = aws_lambda_function.light.arn
+}

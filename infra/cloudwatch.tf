@@ -8,6 +8,10 @@ resource "aws_cloudwatch_event_rule" "light_trigger_on" {
   description = "Turns the light on at a certain time"
 
   schedule_expression = "cron(0 13 * * ? *)"
+
+  lifecycle {
+    ignore_changes = [schedule_expression]
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "light_trigger_off" {
@@ -15,4 +19,15 @@ resource "aws_cloudwatch_event_rule" "light_trigger_off" {
   description = "Turns the light off at a certain time"
 
   schedule_expression = "cron(0 21 * * ? *)"
+
+  lifecycle {
+    ignore_changes = [schedule_expression]
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "sunrise" {
+  name        = "Gefjun-${terraform.workspace}-Sunrise"
+  description = "Sets the timer for ON and OFF trigger based on the sun "
+
+  schedule_expression = "cron(1 0 * * ? *)"
 }
