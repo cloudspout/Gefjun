@@ -17,11 +17,13 @@ resource "aws_lambda_function" "sunrise" {
     variables = {
       LOCATION_LAT = "40.7603878"
       LOCATION_LNG = "-74.0006542"
-      DURATION = 6
-      RULE_ON = aws_cloudwatch_event_rule.light_trigger_on.name
-      RULE_OFF = aws_cloudwatch_event_rule.light_trigger_off.name
+      DURATION     = 6
+      RULE_ON      = aws_cloudwatch_event_rule.light_trigger_on.name
+      RULE_OFF     = aws_cloudwatch_event_rule.light_trigger_off.name
     }
   }
+
+  tags = local.common_tags
 
   depends_on = [aws_iam_role_policy_attachment.lambda_logging-sunrise, aws_cloudwatch_log_group.light]
 }

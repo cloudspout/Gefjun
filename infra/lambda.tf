@@ -1,6 +1,6 @@
 data "archive_file" "light" {
   type        = "zip"
-  source_dir = "../src/javascript/"
+  source_dir  = "../src/javascript/"
   output_path = "${path.root}/.terraform/tmp/light.zip"
 }
 

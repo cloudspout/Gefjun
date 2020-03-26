@@ -20,6 +20,8 @@ resource "aws_lambda_function" "light" {
     }
   }
 
+  tags = local.common_tags
+
   depends_on = [aws_iam_role_policy_attachment.lambda_logging-light, aws_cloudwatch_log_group.light]
 }
 
@@ -47,14 +49,6 @@ resource "aws_lambda_permission" "allow_cloudwatch_off" {
   source_arn    = aws_cloudwatch_event_rule.light_trigger_off.arn
   qualifier     = aws_lambda_alias.light.name
 }
-
-#resource "aws_lambda_permission" "allow_alexa" {
-#  action        = "lambda:InvokeFunction"
-#  function_name = aws_lambda_function.light.function_name
-#  principal     = "alexa-appkit.amazon.com"
-#  event_source_token = var.alexa_skill_id
-#  qualifier     = aws_lambda_alias.light.name
-#}
 
 resource "aws_cloudwatch_event_target" "light_on" {
   target_id = "Gefjun-${terraform.workspace}-Light"

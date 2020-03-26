@@ -1,7 +1,7 @@
 provider "aws" {
   # No secrets here - Use env. variables or the ~/.aws/credentials
   # https://www.terraform.io/docs/providers/aws/index.html
-  version = "~> 2.42.0"
+  version = "~> 2.43.0"
   region  = var.aws_region
 }
 
@@ -17,7 +17,8 @@ terraform {
 locals {
   # Common tags to be assigned to all resources
   common_tags = {
-    Env = terraform.workspace
+    Project = "Gefjun"
+    Env     = terraform.workspace
   }
 }
 

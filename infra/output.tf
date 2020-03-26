@@ -17,3 +17,17 @@ output "endpoint" {
 output "lambda_arn" {
   value = aws_lambda_function.light.arn
 }
+
+output "grafana_admin-password" {
+  value = random_password.grafana_admin-password.result
+}
+
+output "influxdb_admin-password" {
+  value = random_password.influxdb_admin-password.result
+}
+
+
+output "influxdb_grafana-password" {
+  value = random_password.influxdb_grafana-password.result
+}
+

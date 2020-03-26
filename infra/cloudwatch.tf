@@ -3,6 +3,16 @@ resource "aws_cloudwatch_log_group" "light" {
   retention_in_days = 7
 }
 
+resource "aws_cloudwatch_log_group" "grafana" {
+  name              = "/aws/ecs/Gefjun/${terraform.workspace}/grafana"
+  retention_in_days = 7
+}
+
+resource "aws_cloudwatch_log_group" "influxdb" {
+  name              = "/aws/ecs/Gefjun/${terraform.workspace}/influxdb"
+  retention_in_days = 7
+}
+
 resource "aws_cloudwatch_event_rule" "light_trigger_on" {
   name        = "Gefjun-${terraform.workspace}-Light-On"
   description = "Turns the light on at a certain time"
