@@ -49,7 +49,9 @@ resource "aws_ecs_service" "influxdb" {
   network_configuration {
     security_groups = [aws_security_group.influxdb_access.id]
 
-    subnets = aws_subnet.private.*.id
+    #subnets = aws_subnet.private.*.id
+    assign_public_ip = true
+    subnets = aws_subnet.public.*.id
   }
 
   service_registries {

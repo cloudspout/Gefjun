@@ -8,8 +8,8 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 resource "aws_api_gateway_domain_name" "api" {
-  domain_name              = "api.gefjun.cloudspout.io"
-  regional_certificate_arn = aws_acm_certificate_validation.api.certificate_arn
+  domain_name              = aws_acm_certificate.api.domain_name
+  regional_certificate_arn = aws_acm_certificate.api.arn
 
   endpoint_configuration {
     types = ["REGIONAL"]

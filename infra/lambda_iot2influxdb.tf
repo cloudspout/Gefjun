@@ -14,7 +14,7 @@ resource "aws_lambda_function" "iot2influxdb" {
   publish     = true
 
   vpc_config {
-    subnet_ids         = aws_subnet.private.*.id
+    subnet_ids         = aws_subnet.public.*.id
     security_group_ids = [ aws_security_group.iot2influxdb.id ]
   }
 

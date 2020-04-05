@@ -15,7 +15,7 @@ resource "aws_acm_certificate_validation" "grafana" {
 }
 
 resource "aws_acm_certificate" "api" {
-  domain_name       = aws_route53_record.api_gefjun_cloudspout_io.name
+  domain_name       = "api.gefjun.cloudspout.io"
   validation_method = "DNS"
 
   tags = local.common_tags

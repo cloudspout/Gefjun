@@ -40,7 +40,7 @@ resource "aws_route53_record" "grafana_gefjun_cloudspout_io" {
 resource "aws_route53_record" "api_gefjun_cloudspout_io" {
   zone_id = data.aws_route53_zone.cloudspout_io.id
 
-  name    = aws_api_gateway_domain_name.api.domain_name
+  name    = aws_acm_certificate.api.domain_name
   type    = "A"
 
   alias {
