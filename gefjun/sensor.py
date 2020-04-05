@@ -20,7 +20,11 @@ logger.addHandler(streamHandler)
 def generateEnironmentUpdatePayload(greenhouse):
     env = greenhouse.measureEnvironment()
     envDict = {'temperature': env.temperature, 'pressure': env.pressure, 'altitude': env.altitude,
-               'lux1': env.lux1, 'lux2': env.lux2, 'light': env.light}
+               'lux1': env.lux1, 'lux2': env.lux2,
+               'lux3': env.lux3, 'lux4': env.lux4,
+               'lux5': env.lux5, 'lux6': env.lux6,
+               'lux7': env.lux7, 'lux8': env.lux8,
+               'light': env.light}
     stateDict = {'reported': envDict}
     payloadDict = {"state": stateDict}
     JSONPayload = json.dumps(payloadDict)
@@ -106,11 +110,15 @@ def main():
         deviceShadowHandler.shadowRegisterDeltaCallback(customShadowCallback_Delta(greenhouse))
 
         while True:
-            JSONPayload = generateEnironmentUpdatePayload(greenhouse)
-            logger.info('Environment state for update: %s', JSONPayload)
+            try:
+                JSONPayload = generateEnironmentUpdatePayload(greenhouse)
+                logger.info('Environment state for update: %s', JSONPayload)
 
-            deviceShadowHandler.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
-            time.sleep(5)
+                deviceShadowHandler.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+            except publishQueueDisabledException:
+                logger.warning('Device offline - Retrying: %s', e)
+                
+            time.sleep(15)
 
 if __name__ == '__main__':
     def handler(signal_received, frame):
