@@ -26,8 +26,10 @@ output "influxdb_admin-password" {
   value = random_password.influxdb_admin-password.result
 }
 
-
 output "influxdb_grafana-password" {
   value = random_password.influxdb_grafana-password.result
 }
 
+output "api-key" {
+  value = aws_api_gateway_api_key.grafana.value
+}

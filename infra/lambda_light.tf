@@ -65,3 +65,16 @@ resource "aws_cloudwatch_event_target" "light_off" {
 
   input = "{\"desiredState\": false}"
 }
+
+
+resource "aws_lambda_permission" "allow_apigw_on" {
+  statement_id  = "AllowExecutionFromApiGateway-Gefjun-${terraform.workspace}-Light-On"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.light.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+
+#  qualifier     = aws_lambda_alias.light.name
+}
+
