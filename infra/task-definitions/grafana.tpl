@@ -1,7 +1,7 @@
 [
     {
       "name": "grafana",
-      "image": "grafana/grafana",
+      "image": "grafana/grafana:latest-ubuntu",
       "cpu": ${cpu},
       "memory": ${memory},
       "essential": true,
@@ -25,8 +25,8 @@
       ],
       "mountPoints": [
         {
-          "sourceVolume": "grafana-storage",
-          "containerPath": "/var/lib/grafana"
+          "containerPath": "/var/lib/grafana",
+          "sourceVolume": "grafana-storage"
         }
       ],
       "logConfiguration": {

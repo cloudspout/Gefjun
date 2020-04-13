@@ -89,3 +89,41 @@ resource "aws_security_group" "alb_access" {
     Name = "Gefjun-${terraform.workspace}-ALB-access"
   })
 }
+
+resource "aws_security_group" "efs_grafana_access" {
+  name        = "Gefjun-${terraform.workspace}-EFS-grafana-access"
+  description = "Allow access to the Grafana EFS"
+  vpc_id      = aws_vpc._.id
+
+  ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.grafana_access.id,
+    ]
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "Gefjun-${terraform.workspace}-EFS-grafana-access"
+  })
+}
+
+resource "aws_security_group" "efs_influxdb_access" {
+  name        = "Gefjun-${terraform.workspace}-EFS-influxdb-access"
+  description = "Allow access to the Influxdb EFS"
+  vpc_id      = aws_vpc._.id
+
+  ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    security_groups = [
+      aws_security_group.influxdb_access.id,
+    ]
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "Gefjun-${terraform.workspace}-EFS-influxdb-access"
+  })
+}

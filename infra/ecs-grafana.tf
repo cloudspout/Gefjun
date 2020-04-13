@@ -27,6 +27,10 @@ resource "aws_ecs_task_definition" "grafana" {
 
   volume {
     name = "grafana-storage"
+
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.grafana.id
+    }
   }
 
   tags = local.common_tags
@@ -38,6 +42,7 @@ resource "aws_ecs_service" "grafana" {
   task_definition = aws_ecs_task_definition.grafana.arn
   desired_count   = 1
   launch_type = "FARGATE"
+  platform_version = "1.4.0" #This should be latest but that defaults to 1.3 right now
 
   network_configuration {
     security_groups = [aws_security_group.grafana_access.id]
@@ -59,3 +64,16 @@ resource "aws_ecs_service" "grafana" {
   depends_on = [aws_alb_target_group.grafana, aws_ecs_service.influxdb]
 }
 
+resource "aws_efs_file_system" "grafana" {
+  tags = merge(local.common_tags, {
+    Name = "Gefjun-${terraform.workspace}-grafana"
+  })
+}
+
+resource "aws_efs_mount_target" "grafana" {
+  count = length(aws_subnet.public)
+
+  file_system_id = aws_efs_file_system.grafana.id
+  subnet_id      = aws_subnet.public[count.index].id
+  security_groups = [aws_security_group.efs_grafana_access.id]
+}

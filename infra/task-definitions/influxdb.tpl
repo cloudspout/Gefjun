@@ -49,8 +49,8 @@
       ],
       "mountPoints": [
         {
-          "sourceVolume": "influxdb-storage",
-          "containerPath": "/var/lib/influxdb"
+          "containerPath": "/var/lib/influxdb",
+          "sourceVolume": "influxdb-storage"
         }
       ],
       "logConfiguration": {

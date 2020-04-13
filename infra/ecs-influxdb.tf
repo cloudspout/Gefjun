@@ -34,6 +34,10 @@ resource "aws_ecs_task_definition" "influxdb" {
 
   volume {
     name = "influxdb-storage"
+
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.influxdb.id
+    }
   }
 
   tags = local.common_tags
@@ -43,8 +47,9 @@ resource "aws_ecs_service" "influxdb" {
   name            = "influxdb"
   cluster         = aws_ecs_cluster.gefjun.id
   task_definition = aws_ecs_task_definition.influxdb.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type = "FARGATE"
+  platform_version = "1.4.0" #This should be latest but that defaults to 1.3 right now
 
   network_configuration {
     security_groups = [aws_security_group.influxdb_access.id]
@@ -62,3 +67,16 @@ resource "aws_ecs_service" "influxdb" {
   propagate_tags = "TASK_DEFINITION"
 }
 
+resource "aws_efs_file_system" "influxdb" {
+  tags = merge(local.common_tags, {
+    Name = "Gefjun-${terraform.workspace}-influxdb"
+  })
+}
+
+resource "aws_efs_mount_target" "influxdb" {
+  count = length(aws_subnet.public)
+
+  file_system_id = aws_efs_file_system.influxdb.id
+  subnet_id      = aws_subnet.public[count.index].id
+  security_groups = [aws_security_group.efs_influxdb_access.id]
+}

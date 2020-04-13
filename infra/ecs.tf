@@ -14,3 +14,7 @@ resource "aws_ecs_cluster" "gefjun" {
 
   tags = local.common_tags
 }
+
+
+
+

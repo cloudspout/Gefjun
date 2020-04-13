@@ -1,7 +1,7 @@
 provider "aws" {
   # No secrets here - Use env. variables or the ~/.aws/credentials
   # https://www.terraform.io/docs/providers/aws/index.html
-  version = "~> 2.43.0"
+  version = "~> 2.57.0"
   region  = var.aws_region
 }
 
