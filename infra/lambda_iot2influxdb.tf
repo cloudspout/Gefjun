@@ -46,7 +46,6 @@ resource "aws_lambda_permission" "allow_iot_rule" {
   function_name = aws_lambda_function.iot2influxdb.function_name
   principal     = "iot.amazonaws.com"
   source_arn    = aws_iot_topic_rule.iot2influxdb.arn
-  qualifier     = aws_lambda_alias.iot2influxdb.name
 }
 
 resource "aws_iot_topic_rule" "iot2influxdb" {
