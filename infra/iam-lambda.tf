@@ -121,6 +121,31 @@ resource "aws_iam_policy" "update-cloudwatch-cron" {
   policy = data.aws_iam_policy_document.update-cloudwatch-cron.json
 }
 
+
+data "aws_iam_policy_document" "get-grafana_api_key-secret" {
+  version = "2012-10-17"
+
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      aws_secretsmanager_secret.grafana_api_key.arn
+    ]
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "get-grafana_api_key-secret" {
+  name        = "Gefjun-${terraform.workspace}-get-grafana_api_key-secret"
+  path        = "/"
+  description = "IAM policy to access the GRAFANA_API_KEY secret"
+
+  policy = data.aws_iam_policy_document.get-grafana_api_key-secret.json
+}
+
 resource "aws_iam_role_policy_attachment" "lambda_logging-sunrise" {
   role       = aws_iam_role.sunrise.name
   policy_arn = aws_iam_policy.lambda_logging.arn
@@ -129,6 +154,11 @@ resource "aws_iam_role_policy_attachment" "lambda_logging-sunrise" {
 resource "aws_iam_role_policy_attachment" "update-cloudwatch-cron" {
   role       = aws_iam_role.sunrise.name
   policy_arn = aws_iam_policy.update-cloudwatch-cron.arn
+}
+
+resource "aws_iam_role_policy_attachment" "get-grafana_api_key-secret" {
+  role       = aws_iam_role.sunrise.name
+  policy_arn = aws_iam_policy.get-grafana_api_key-secret.arn
 }
 
 resource "aws_iam_role" "iot2influxdb" {

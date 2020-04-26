@@ -84,6 +84,25 @@ resource "aws_api_gateway_stage" "greenhouse" {
   tags = merge(local.common_tags, {
     md5: local.apigateway_md5
   })
+
+  depends_on = [
+    aws_cloudwatch_log_group.api_gateway
+  ]
+}
+
+resource "aws_api_gateway_method_settings" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_stage.greenhouse.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+    logging_level   = "INFO"
+  }
+
+  depends_on = [
+    aws_api_gateway_account.api
+  ]
 }
 
 resource "aws_api_gateway_resource" "greenhouse" {
@@ -107,4 +126,7 @@ resource "aws_api_gateway_base_path_mapping" "greenhouse" {
   api_id = aws_api_gateway_rest_api.api.id
   stage_name = aws_api_gateway_stage.greenhouse.stage_name
   domain_name = aws_api_gateway_domain_name.api.domain_name
+}
+resource "aws_api_gateway_account" "api" {
+  cloudwatch_role_arn = aws_iam_role.api_gateway.arn
 }

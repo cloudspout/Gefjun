@@ -15,6 +15,10 @@
         {
           "name": "GF_SECURITY_ADMIN_USER",
           "value": "${admin_username}"
+        },
+        {
+          "name": "GF_INSTALL_PLUGINS",
+          "value": "https://cloudspout.bintray.com/cloudspout-button-panel/cloudspout-button-panel_1.0.0.zip"
         }
       ],
       "secrets": [

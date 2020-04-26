@@ -16,6 +16,15 @@ variable "grafana_cpu" {
   default     = 256
 }
 
+variable "grafana_api_annotation" {
+  type = string
+  default = "https://grafana.gefjun.cloudspout.io/api/annotations"
+}
+
+variable "grafana_api_key" {
+  type = string
+}
+
 variable "grafana_memory" {
   type        = number
   description = ""
@@ -33,3 +42,6 @@ variable "influxdb_memory" {
   description = ""
   default     = 512
 }
+
+
+

@@ -39,5 +39,13 @@ resource "aws_cloudwatch_event_rule" "sunrise" {
   name        = "Gefjun-${terraform.workspace}-Sunrise"
   description = "Sets the timer for ON and OFF trigger based on the sun "
 
-  schedule_expression = "cron(1 0 * * ? *)"
+  schedule_expression = "cron(1 6 * * ? *)"
+}
+
+
+resource "aws_cloudwatch_log_group" "api_gateway" {
+  name              = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.api.id}/${terraform.workspace}"
+  retention_in_days = 1
+
+  # ... potentially other configuration ...
 }
