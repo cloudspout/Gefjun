@@ -17,6 +17,12 @@ class PhysicalEnvironment:
     temperature: float
     lux1: int
     lux2: int
+    lux3: int
+    lux4: int
+    lux5: int
+    lux6: int
+    lux7: int
+    lux8: int
     light: bool
 
 class Greenhouse:
@@ -68,8 +74,10 @@ class Greenhouse:
         env = PhysicalEnvironment(pressure=self.sensor2.read_pressure(),
                                   altitude=self.sensor2.read_altitude(),
                                   temperature=self.sensor2.read_temperature(),
-                                  lux1=self.adc.read(0),
-                                  lux2=self.adc.read(1),
+                                  lux1=self.adc.read(0), lux2=self.adc.read(1),
+                                  lux3=self.adc.read(2), lux4=self.adc.read(3),
+                                  lux5=self.adc.read(4), lux6=self.adc.read(5),
+                                  lux7=self.adc.read(6), lux8=self.adc.read(7),
                                   light=self.light)
         logger.debug('Current environment: %s', env)
         return env
