@@ -10,7 +10,7 @@ resource "aws_lambda_function" "sunrise" {
 
   runtime     = "nodejs12.x"
   memory_size = 128
-  timeout     = 3
+  timeout     = 15
   publish     = true
 
   environment {
@@ -20,6 +20,8 @@ resource "aws_lambda_function" "sunrise" {
       DURATION     = 6
       RULE_ON      = aws_cloudwatch_event_rule.light_trigger_on.name
       RULE_OFF     = aws_cloudwatch_event_rule.light_trigger_off.name
+      GRAFANA_API_ANNOTATION = var.grafana_api_annotation
+      GRAFANA_API_SECRET_ID = aws_secretsmanager_secret.grafana_api_key.id
     }
   }
 

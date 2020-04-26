@@ -10,6 +10,7 @@
   "license": "GPLv3",
   "dependencies": {
     "influx": "^5.5.1",
-    "suncalc": "^1.8.0"
+    "suncalc": "^1.8.0",
+    "tiny-json-http": "^7.1.2"
   }
 }
