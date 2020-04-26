@@ -1,0 +1,3 @@
+[submodule "src/grafana/cloudspout-button-panel"]
+	path = src/grafana/cloudspout-button-panel
+	url = git@github.com:cloudspout/cloudspout-button-panel
