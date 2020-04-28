@@ -19,7 +19,7 @@
         },
         {
           "name": "GF_INSTALL_PLUGINS",
-          "value": "https://cloudspout.bintray.com/cloudspout-button-panel/cloudspout-button-panel.zip;cloudspout-button-panel"
+          "value": "https://github.com/cloudspout/cloudspout-button-panel/releases/download/1.0.2/cloudspout-button-panel.zip;cloudspout-button-panel"
         }
       ],
       "secrets": [

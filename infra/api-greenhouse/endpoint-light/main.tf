@@ -49,8 +49,19 @@ resource "aws_api_gateway_integration_response" "greenhouse_lights" {
   selection_pattern = ".*"
 
   response_templates = {
-    "application/json" = "{\"statusCode\":\"200\"}"
-  }  
+    "application/json" = jsonencode({
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    })
+  }
+
+    response_parameters = { 
+    "method.response.header.Access-Control-Allow-Origin" = "'*'",
+    "method.response.header.Access-Control-Allow-Headers" = "'*'",
+    "method.response.header.Access-Control-Allow-Methods" = "'*'"
+  }
 }
 
 resource "aws_api_gateway_integration_response" "greenhouse_lights-cors" {
@@ -81,6 +92,12 @@ resource "aws_api_gateway_method_response" "response_200" {
   resource_id   = aws_api_gateway_method.greenhouse_lights.resource_id
   http_method   = aws_api_gateway_method.greenhouse_lights.http_method
   
+  response_parameters = { 
+    "method.response.header.Access-Control-Allow-Origin" = true,
+    "method.response.header.Access-Control-Allow-Headers" = true,
+    "method.response.header.Access-Control-Allow-Methods" = true 
+  }
+
   status_code = 200
 }
 

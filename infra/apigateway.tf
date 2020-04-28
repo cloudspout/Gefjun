@@ -86,7 +86,8 @@ resource "aws_api_gateway_stage" "greenhouse" {
   })
 
   depends_on = [
-    aws_cloudwatch_log_group.api_gateway
+    aws_cloudwatch_log_group.api_gateway,
+    module.api_greenhouse
   ]
 }
 
