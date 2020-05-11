@@ -15,19 +15,22 @@ resource "aws_lambda_function" "sunrise" {
 
   environment {
     variables = {
-      LOCATION_LAT = "40.7603878"
-      LOCATION_LNG = "-74.0006542"
-      DURATION     = 6
-      RULE_ON      = aws_cloudwatch_event_rule.light_trigger_on.name
-      RULE_OFF     = aws_cloudwatch_event_rule.light_trigger_off.name
+      LOCATION_LAT           = "40.7603878"
+      LOCATION_LNG           = "-74.0006542"
+      DURATION               = 6
+      RULE_ON                = aws_cloudwatch_event_rule.light_trigger_on.name
+      RULE_OFF               = aws_cloudwatch_event_rule.light_trigger_off.name
       GRAFANA_API_ANNOTATION = var.grafana_api_annotation
-      GRAFANA_API_SECRET_ID = aws_secretsmanager_secret.grafana_api_key.id
+      GRAFANA_API_SECRET_ID  = aws_secretsmanager_secret.grafana_api_key.id
     }
   }
 
   tags = local.common_tags
 
-  depends_on = [aws_iam_role_policy_attachment.lambda_logging-sunrise, aws_cloudwatch_log_group.light]
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logging-sunrise,
+    aws_cloudwatch_log_group.sunrise
+  ]
 }
 
 resource "aws_lambda_alias" "sunrise" {

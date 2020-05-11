@@ -10,8 +10,8 @@ resource "aws_secretsmanager_secret_version" "grafana_admin-password" {
 }
 
 resource "random_password" "grafana_admin-password" {
-  length = 12
-  special = true
+  length           = 12
+  special          = true
   override_special = "_%@"
 }
 
@@ -27,8 +27,8 @@ resource "aws_secretsmanager_secret_version" "influxdb_admin-password" {
 }
 
 resource "random_password" "influxdb_admin-password" {
-  length = 12
-  special = true
+  length           = 12
+  special          = true
   override_special = "_%@"
 }
 
@@ -44,8 +44,8 @@ resource "aws_secretsmanager_secret_version" "influxdb_grafana-password" {
 }
 
 resource "random_password" "influxdb_grafana-password" {
-  length = 12
-  special = true
+  length           = 12
+  special          = true
   override_special = "_%@"
 }
 
@@ -61,7 +61,7 @@ resource "aws_secretsmanager_secret_version" "influxdb_lambda-password" {
 }
 
 resource "random_password" "influxdb_lambda-password" {
-  length = 12
-  special = true
+  length           = 12
+  special          = true
   override_special = "_%@"
 }

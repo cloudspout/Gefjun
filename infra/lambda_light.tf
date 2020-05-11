@@ -22,7 +22,10 @@ resource "aws_lambda_function" "light" {
 
   tags = local.common_tags
 
-  depends_on = [aws_iam_role_policy_attachment.lambda_logging-light, aws_cloudwatch_log_group.light]
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logging-light,
+    aws_cloudwatch_log_group.light
+  ]
 }
 
 resource "aws_lambda_alias" "light" {
@@ -75,6 +78,6 @@ resource "aws_lambda_permission" "allow_apigw_on" {
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 
-#  qualifier     = aws_lambda_alias.light.name
+  #  qualifier     = aws_lambda_alias.light.name
 }
 

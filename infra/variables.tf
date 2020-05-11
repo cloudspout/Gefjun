@@ -17,7 +17,7 @@ variable "grafana_cpu" {
 }
 
 variable "grafana_api_annotation" {
-  type = string
+  type    = string
   default = "https://grafana.gefjun.cloudspout.io/api/annotations"
 }
 

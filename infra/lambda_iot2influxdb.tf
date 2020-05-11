@@ -15,22 +15,25 @@ resource "aws_lambda_function" "iot2influxdb" {
 
   vpc_config {
     subnet_ids         = aws_subnet.public.*.id
-    security_group_ids = [ aws_security_group.iot2influxdb.id ]
+    security_group_ids = [aws_security_group.iot2influxdb.id]
   }
 
   environment {
     variables = {
-        INFLUXDB        = "gefjun"
-        INFLUXDBUSRNAME = "lambda"
-        INFLUXDBPWD     = aws_secretsmanager_secret_version.influxdb_lambda-password.secret_string
-        INFLUXDBPORT    = "8086"
-        INFLUXDBHOST    = "influxdb.gefjun.local"
+      INFLUXDB        = "gefjun"
+      INFLUXDBUSRNAME = "lambda"
+      INFLUXDBPWD     = aws_secretsmanager_secret_version.influxdb_lambda-password.secret_string
+      INFLUXDBPORT    = "8086"
+      INFLUXDBHOST    = "influxdb.gefjun.local"
     }
   }
 
   tags = local.common_tags
 
-  depends_on = [aws_iam_role_policy_attachment.lambda_logging-iot2influxdb, aws_cloudwatch_log_group.light]
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_logging-iot2influxdb,
+    aws_cloudwatch_log_group.iot2influxdb
+  ]
 }
 
 resource "aws_lambda_alias" "iot2influxdb" {

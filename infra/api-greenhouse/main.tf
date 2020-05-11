@@ -21,8 +21,8 @@ module "endponit_light-off" {
 
   aws_api_gateway_rest_api = var.aws_api_gateway_rest_api
   aws_api_gateway_resource = aws_api_gateway_resource.greenhouse_lights_off
-  aws_lambda_function = var.aws_lambda_function
-  desired_state = false
+  aws_lambda_function      = var.aws_lambda_function
+  desired_state            = false
 }
 
 module "endponit_light-on" {
@@ -30,8 +30,8 @@ module "endponit_light-on" {
 
   aws_api_gateway_rest_api = var.aws_api_gateway_rest_api
   aws_api_gateway_resource = aws_api_gateway_resource.greenhouse_lights_on
-  aws_lambda_function = var.aws_lambda_function
-  desired_state = true
+  aws_lambda_function      = var.aws_lambda_function
+  desired_state            = true
 }
 
 

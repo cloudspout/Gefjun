@@ -8,8 +8,8 @@ resource "aws_ecs_cluster" "gefjun" {
   }
 
   setting {
-    name = "containerInsights"
-    value = "enabled"
+    name  = "containerInsights"
+    value = "disabled"
   }
 
   tags = local.common_tags

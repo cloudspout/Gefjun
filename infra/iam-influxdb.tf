@@ -20,13 +20,13 @@ data "aws_iam_policy_document" "influxdb_secrets_access" {
 
   statement {
     actions = [
-        "secretsmanager:GetSecretValue"
+      "secretsmanager:GetSecretValue"
     ]
     resources = [
       aws_secretsmanager_secret.influxdb_admin-password.arn,
       aws_secretsmanager_secret.influxdb_grafana-password.arn,
       aws_secretsmanager_secret.influxdb_lambda-password.arn
-     ]
+    ]
     effect = "Allow"
   }
 }

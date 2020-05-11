@@ -5,10 +5,10 @@ data "template_file" "grafana" {
     cpu    = var.grafana_cpu
     memory = var.grafana_memory
 
-    admin_username = "gefjun"
+    admin_username     = "gefjun"
     admin_password-arn = aws_secretsmanager_secret.grafana_admin-password.arn
 
-    region = var.aws_region
+    region    = var.aws_region
     log_group = aws_cloudwatch_log_group.grafana.name
   }
 }
@@ -37,11 +37,11 @@ resource "aws_ecs_task_definition" "grafana" {
 }
 
 resource "aws_ecs_service" "grafana" {
-  name            = "grafana"
-  cluster         = aws_ecs_cluster.gefjun.id
-  task_definition = aws_ecs_task_definition.grafana.arn
-  desired_count   = 1
-  launch_type = "FARGATE"
+  name             = "grafana"
+  cluster          = aws_ecs_cluster.gefjun.id
+  task_definition  = aws_ecs_task_definition.grafana.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
   platform_version = "1.4.0" #This should be latest but that defaults to 1.3 right now
 
   network_configuration {
@@ -49,7 +49,7 @@ resource "aws_ecs_service" "grafana" {
 
     #subnets = aws_subnet.private.*.id
     assign_public_ip = true
-    subnets = aws_subnet.public.*.id
+    subnets          = aws_subnet.public.*.id
   }
 
   load_balancer {
@@ -58,7 +58,7 @@ resource "aws_ecs_service" "grafana" {
     container_port   = 3000
   }
 
-  tags = local.common_tags
+  tags           = local.common_tags
   propagate_tags = "TASK_DEFINITION"
 
   depends_on = [aws_alb_target_group.grafana, aws_ecs_service.influxdb]
@@ -73,7 +73,7 @@ resource "aws_efs_file_system" "grafana" {
 resource "aws_efs_mount_target" "grafana" {
   count = length(aws_subnet.public)
 
-  file_system_id = aws_efs_file_system.grafana.id
-  subnet_id      = aws_subnet.public[count.index].id
+  file_system_id  = aws_efs_file_system.grafana.id
+  subnet_id       = aws_subnet.public[count.index].id
   security_groups = [aws_security_group.efs_grafana_access.id]
 }

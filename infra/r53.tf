@@ -1,6 +1,6 @@
 data "aws_route53_zone" "cloudspout_io" {
-  name         = "cloudspout.io."
-} 
+  name = "cloudspout.io."
+}
 
 resource "aws_route53_record" "grafana_validation" {
   count = length(aws_acm_certificate.grafana.domain_validation_options)
@@ -27,8 +27,8 @@ resource "aws_route53_record" "api_validation" {
 resource "aws_route53_record" "grafana_gefjun_cloudspout_io" {
   zone_id = data.aws_route53_zone.cloudspout_io.id
 
-  name    = "grafana.gefjun.cloudspout.io"
-  type    = "A"
+  name = "grafana.gefjun.cloudspout.io"
+  type = "A"
 
   alias {
     name                   = aws_alb.grafana.dns_name
@@ -40,8 +40,8 @@ resource "aws_route53_record" "grafana_gefjun_cloudspout_io" {
 resource "aws_route53_record" "api_gefjun_cloudspout_io" {
   zone_id = data.aws_route53_zone.cloudspout_io.id
 
-  name    = aws_acm_certificate.api.domain_name
-  type    = "A"
+  name = aws_acm_certificate.api.domain_name
+  type = "A"
 
   alias {
     evaluate_target_health = true

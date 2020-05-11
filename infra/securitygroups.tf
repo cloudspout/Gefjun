@@ -4,9 +4,9 @@ resource "aws_security_group" "grafana_access" {
   vpc_id      = aws_vpc._.id
 
   ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
+    from_port       = 3000
+    to_port         = 3000
+    protocol        = "tcp"
     security_groups = [aws_security_group.alb_access.id]
   }
 
@@ -45,9 +45,9 @@ resource "aws_security_group" "influxdb_access" {
   vpc_id      = aws_vpc._.id
 
   ingress {
-    from_port   = 8086
-    to_port     = 8086
-    protocol    = "tcp"
+    from_port = 8086
+    to_port   = 8086
+    protocol  = "tcp"
     security_groups = [
       aws_security_group.grafana_access.id,
       aws_security_group.iot2influxdb.id
@@ -96,9 +96,9 @@ resource "aws_security_group" "efs_grafana_access" {
   vpc_id      = aws_vpc._.id
 
   ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
     security_groups = [
       aws_security_group.grafana_access.id,
     ]
@@ -115,9 +115,9 @@ resource "aws_security_group" "efs_influxdb_access" {
   vpc_id      = aws_vpc._.id
 
   ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
     security_groups = [
       aws_security_group.influxdb_access.id,
     ]

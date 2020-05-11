@@ -10,31 +10,31 @@ resource "aws_alb" "grafana" {
   tags = local.common_tags
 }
 
-resource "aws_alb_listener" "alb_listener" {  
+resource "aws_alb_listener" "alb_listener" {
   load_balancer_arn = aws_alb.grafana.arn
   port              = 443
   protocol          = "HTTPS"
-  
+
   certificate_arn = aws_acm_certificate_validation.grafana.certificate_arn
 
-  default_action {    
+  default_action {
     target_group_arn = aws_alb_target_group.grafana.arn
-    type             = "forward"  
+    type             = "forward"
   }
 
-  depends_on = [ aws_alb_target_group.grafana ]
+  depends_on = [aws_alb_target_group.grafana]
 }
 
 resource "aws_alb_target_group" "grafana" {
-  name     = "Gefjun-${terraform.workspace}-Grafana"
-  port     = 3000
+  name        = "Gefjun-${terraform.workspace}-Grafana"
+  port        = 3000
   target_type = "ip"
-  protocol = "HTTP"
-  vpc_id   = aws_vpc._.id
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc._.id
 
   health_check {
     matcher = "200-399"
   }
 
-  depends_on = [ aws_alb.grafana ]
+  depends_on = [aws_alb.grafana]
 }

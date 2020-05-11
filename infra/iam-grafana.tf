@@ -14,10 +14,10 @@ data "aws_iam_policy_document" "grafana_secrets_access" {
 
   statement {
     actions = [
-        "secretsmanager:GetSecretValue"
+      "secretsmanager:GetSecretValue"
     ]
-    resources = [ aws_secretsmanager_secret.grafana_admin-password.arn ]
-    effect = "Allow"
+    resources = [aws_secretsmanager_secret.grafana_admin-password.arn]
+    effect    = "Allow"
   }
 }
 
@@ -44,23 +44,23 @@ data "aws_iam_policy_document" "grafana_cloudwatch_access" {
 
   statement {
     actions = [
-        "cloudwatch:DescribeAlarmsForMetric",
-        "cloudwatch:ListMetrics",
-        "cloudwatch:GetMetricStatistics",
-        "cloudwatch:GetMetricData"
+      "cloudwatch:DescribeAlarmsForMetric",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:GetMetricStatistics",
+      "cloudwatch:GetMetricData"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 
   statement {
     actions = [
-      "ec2:DescribeTags", 
+      "ec2:DescribeTags",
       "ec2:DescribeInstances",
       "ec2:DescribeRegions"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 
   statement {
@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "grafana_cloudwatch_access" {
       "tag:GetResources"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 }
 

@@ -24,16 +24,16 @@ data "aws_iam_policy_document" "api_gateway" {
 
   statement {
     actions = [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams",
-        "logs:PutLogEvents",
-        "logs:GetLogEvents",
-        "logs:FilterLogEvents"
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 }
 

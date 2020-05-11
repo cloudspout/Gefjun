@@ -1,16 +1,31 @@
+resource "aws_cloudwatch_log_group" "AWSIotLogs" {
+  name              = "AWSIotLogs"
+  retention_in_days = 1
+}
+
 resource "aws_cloudwatch_log_group" "light" {
-  name              = "/aws/lambda/Gefjun/${terraform.workspace}/light"
-  retention_in_days = 7
+  name              = "/aws/lambda/Gefjun-${terraform.workspace}-Light"
+  retention_in_days = 1
+}
+
+resource "aws_cloudwatch_log_group" "iot2influxdb" {
+  name              = "/aws/lambda/Gefjun-${terraform.workspace}-iot2influxdb"
+  retention_in_days = 1
+}
+
+resource "aws_cloudwatch_log_group" "sunrise" {
+  name              = "/aws/lambda/Gefjun-${terraform.workspace}-Sunrise"
+  retention_in_days = 1
 }
 
 resource "aws_cloudwatch_log_group" "grafana" {
   name              = "/aws/ecs/Gefjun/${terraform.workspace}/grafana"
-  retention_in_days = 7
+  retention_in_days = 1
 }
 
 resource "aws_cloudwatch_log_group" "influxdb" {
   name              = "/aws/ecs/Gefjun/${terraform.workspace}/influxdb"
-  retention_in_days = 7
+  retention_in_days = 1
 }
 
 resource "aws_cloudwatch_event_rule" "light_trigger_on" {
