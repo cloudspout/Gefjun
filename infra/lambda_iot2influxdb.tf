@@ -24,7 +24,7 @@ resource "aws_lambda_function" "iot2influxdb" {
       INFLUXDBUSRNAME = "lambda"
       INFLUXDBPWD     = aws_secretsmanager_secret_version.influxdb_lambda-password.secret_string
       INFLUXDBPORT    = "8086"
-      INFLUXDBHOST    = "influxdb.gefjun.local"
+      INFLUXDBHOST    = "${module.fargate-influxdb-efs.registry.name}.${aws_service_discovery_private_dns_namespace.gefjun.name}"
     }
   }
 

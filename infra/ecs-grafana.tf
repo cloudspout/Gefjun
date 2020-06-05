@@ -61,7 +61,7 @@ resource "aws_ecs_service" "grafana" {
   tags           = local.common_tags
   propagate_tags = "TASK_DEFINITION"
 
-  depends_on = [aws_alb_target_group.grafana, aws_ecs_service.influxdb]
+  depends_on = [aws_alb_target_group.grafana, module.fargate-influxdb-efs ]
 }
 
 resource "aws_efs_file_system" "grafana" {
