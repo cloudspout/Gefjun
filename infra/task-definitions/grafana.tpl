@@ -1,7 +1,7 @@
 [
     {
       "name": "grafana",
-      "image": "grafana/grafana:latest",
+      "image": "grafana/grafana:7.0.3",
       "cpu": ${cpu},
       "memory": ${memory},
       "essential": true,
@@ -19,7 +19,7 @@
         },
         {
           "name": "GF_INSTALL_PLUGINS",
-          "value": "https://github.com/cloudspout/cloudspout-button-panel/releases/download/1.0.3/cloudspout-button-panel.zip;cloudspout-button-panel"
+          "value": "https://github.com/cloudspout/cloudspout-button-panel/releases/download/7.0.1/cloudspout-button-panel.zip;cloudspout-button-panel"
         }
       ],
       "secrets": [
